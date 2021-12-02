@@ -3,16 +3,7 @@
 * Day 1
 * Author: zachy-ho (https://github.com/zachy-ho)
 * */
-import { readFileSync } from 'fs';
-
-/** 
-* Reads a file synchronously and puts each line into an item in an array of strings 
-* @param { string } file: Path of input file
-* */
-function getArrayOfStringsFromFile(file: string) {
-  let text = readFileSync(file, 'utf-8')
-  return(text.split('\n'))
-}
+import { getArrayOfStringsFromFile } from '../../utils';
 
 /** Part 1: Depth value increases */
 function getIncreasingOccurrences(records: number[] | undefined) {
@@ -27,8 +18,8 @@ function getIncreasingOccurrences(records: number[] | undefined) {
 }
 
 function runPart1() {
-  const strArr = getArrayOfStringsFromFile('./input.txt')
-  const depthValues = strArr.map((i) => parseInt(i));
+  const strArr = getArrayOfStringsFromFile('./input.txt');
+  const depthValues = strArr.map((i: string) => parseInt(i));
   console.log(`Part 1: ${getIncreasingOccurrences((depthValues))}`)
 }
 
