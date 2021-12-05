@@ -3,7 +3,6 @@
 * Day 1
 * Author: zachy-ho (https://github.com/zachy-ho)
 * */
-import { readFileSync } from 'fs';
 
 /** Part 1: Description */
 

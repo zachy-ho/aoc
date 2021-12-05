@@ -1,13 +1,13 @@
 /** 
 * Advent of Code 2021
-* Day 1
+* Day 2
 * Author: zachy-ho (https://github.com/zachy-ho)
 * */
-import { getArrayOfStringsFromFile } from '../../utils';
+import { getLinesFromFile } from '../../utils';
 
 /** Part 1: Calculate product of horizontal and depth position */
 function runPart1() {
-  const linesArr = getArrayOfStringsFromFile('./input.txt');
+  const linesArr = getLinesFromFile('./input.txt');
   const movementsArr: [string, number][]= linesArr.map((i: string) => {
     const movement = i.split(' ');
     return [movement[0], parseInt(movement[1])];
@@ -36,7 +36,7 @@ function runPart1() {
 
 /** Part 2: Calculate product but this time with a new factor of 'aim' */
 function runPart2() {
-  const linesArr = getArrayOfStringsFromFile('./input.txt');
+  const linesArr = getLinesFromFile('./input.txt');
   const movementsArr: [string, number][]= linesArr.map((i: string) => {
     const movement = i.split(' ');
     return [movement[0], parseInt(movement[1])];

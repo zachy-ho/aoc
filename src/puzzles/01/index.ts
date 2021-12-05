@@ -3,7 +3,7 @@
 * Day 1
 * Author: zachy-ho (https://github.com/zachy-ho)
 * */
-import { getArrayOfStringsFromFile } from '../../utils';
+import { getLinesFromFile } from '../../utils';
 
 /** Part 1: Depth value increases */
 function getIncreasingOccurrences(records: number[] | undefined) {
@@ -18,7 +18,7 @@ function getIncreasingOccurrences(records: number[] | undefined) {
 }
 
 function runPart1() {
-  const strArr = getArrayOfStringsFromFile('./input.txt');
+  const strArr = getLinesFromFile('./input.txt');
   const depthValues = strArr.map((i: string) => parseInt(i));
   console.log(`Part 1: ${getIncreasingOccurrences((depthValues))}`)
 }
@@ -35,7 +35,7 @@ function getIncreasingWindows(sums: number[]) {
 }
 
 function runPart2() {
-  const strArr = getArrayOfStringsFromFile('./input.txt')
+  const strArr = getLinesFromFile('./input.txt')
   const depthValues = strArr.map((i) => parseInt(i));
   const sumArr = getIncreasingWindows(depthValues);
   console.log(`Part 2: ${getIncreasingOccurrences(sumArr)}`);
