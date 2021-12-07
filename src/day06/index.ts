@@ -6,12 +6,29 @@
 
 import run from "aocrunner";
 
-const parseInput = (rawInput: string) => rawInput;
+type FishMap = Map<number, number>
 
-/** Part 1: Description */
+function createFrequencyMap(array: number[]): FishMap {
+  const map = new Map([...Array(9).keys()].map((key) => [key, 0]));
+  array.forEach((i) => {
+    map.set(i, map.get(i)! + 1);
+  })
+
+  return map;
+}
+
+function breedFish({ fishes, days } : { fishes: FishMap, days: number }) {
+
+}
+
+const parseInput = (rawInput: string) => rawInput.split(',').map((i) => parseInt(i.replace(/\n+/, '')));
+;
+
+/** Part 1: Exponential growth of lantern fish */
 const part1 = (rawInput: string) => {
   const input = parseInput(rawInput);
-
+  const fishMap = createFrequencyMap(input);
+  return breedFish({ fishes: fishMap, days: 80 });
   return;
 };
 

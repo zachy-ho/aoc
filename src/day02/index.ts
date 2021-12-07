@@ -13,7 +13,7 @@ const parseInput = (rawInput: string): [string, number][] => (
   })
 );
 
-/** Part 1: Description */
+/** Part 1: Calculate product of horizontal and depth position */
 const part1 = (rawInput: string) => {
   const input = parseInput(rawInput);
   let horizontal = 0;
@@ -34,7 +34,7 @@ const part1 = (rawInput: string) => {
   return horizontal * depth;
 };
 
-/** Part 2: Description */
+/** Part 2: Calculate product but this time with a new factor of 'aim' */
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
   let horizontal = 0;
