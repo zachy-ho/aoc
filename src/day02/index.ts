@@ -1,6 +1,6 @@
 /** 
 * Advent of Code 2021
-* Day xx
+* Day 02
 * Author: zachy-ho (https://github.com/zachy-ho)
 * */
 
