@@ -65,17 +65,6 @@ const standardisedCombos: Map<string, number> =
     ['ABCDFG', 9],
 ])
 
-// const standardisedMap: StandardisedMap = 
-// new Map([
-  // ['A', ''],
-  // ['B', ''],
-  // ['C', ''],
-  // ['D', ''],
-  // ['E', ''],
-  // ['F', ''],
-  // ['G', ''],
-// ]);
-
 function getDigitLettersFor1(patterns: string[]) {
   return patterns.find((i) => i.length === 2)!.split('');
 }
@@ -84,26 +73,6 @@ function getDigitLettersFor4(patterns: string[]) {
 }
 function getDigitLettersFor7(patterns: string[]) {
   return patterns.find((i) => i.length === 3)!.split('');
-}
-function getDigitLettersFor8(patterns: string[]) {
-  return patterns.find((i) => i.length === 7)!.split('');
-}
-function getDigitLettersFor0(patterns: string[]) {
-
-}
-function getDigitLettersFor2(patterns: string[]) {
-
-}
-function getDigitLettersFor3(patterns: string[]) {
-
-}
-function getDigitLettersFor5(patterns: string[]) {
-
-}
-function getDigitLettersFor6(patterns: string[]) {
-}
-function getDigitLettersFor9(patterns: string[]) {
-
 }
 function getBNonStandard({
   sixSegments,
@@ -180,11 +149,9 @@ function getDNonStandard({
 // Assuming every entry has a representation for each digit (0 - 9)
 function createStandardisedMap(entry: Entry): StandardisedMap {
   const standardisedMap = new Map();
-  // TODO How to determine what non-standardised letter is mapping to?
   const digitLettersFor1 = getDigitLettersFor1(entry.patterns);
   const digitLettersFor4 = getDigitLettersFor4(entry.patterns);
   const digitLettersFor7 = getDigitLettersFor7(entry.patterns);
-  const digitLettersFor8 = getDigitLettersFor8(entry.patterns);
   const fiveSegments = entry.patterns.filter((i) => i.length === 5).map((i) => Array.from(i));
   const sixSegments = entry.patterns.filter((i) => i.length === 6).map((i) => Array.from(i));
   // Determine A : Compare 1 & [7] 
@@ -225,8 +192,6 @@ function getOutputNumber({
   map: StandardisedMap,
   output: string[]
 }): number {
-  // TODO
-  let number = 0;
   let numberStr = '';
   output.forEach((i) => {
     // Convert each letter to its standardised counterpart
