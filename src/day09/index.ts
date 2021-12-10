@@ -105,61 +105,43 @@ const part1 = (rawInput: string) => {
   return heights.reduce((prev, curr) => prev + curr);
 };
 
-/** Part 2: Description */
+/** Part 2: Find sum of points in three largest basins */
 const part2 = (rawInput: string) => {
   const cave = parseInput(rawInput);
 
   // Data structures:
-  // Have an empty array to keep track of processed points (processed)
-  // Store each point as strings of their coordinates (i.e. '1|5' for row = 1, col 5)
   const processed: Set<string> = new Set();
-  // Have an array to act as a queue
   const queue: Point[] = [];
   const toBeProcessed: Set<string> = new Set();
-  // Have an array to store basins found (use cave.basins)
-
-  // Have an array that's updated every time a basin is formed to record points that are left to be processed
-  let notProcessed = [...cave.points];
+  let notProcessed = new Set(cave.points);
 
   // Steps:
   queue.push(cave.heightMap[0][0]);
-  // Start with a queue containing only the first point in points
   toBeProcessed.add(cave.heightMap[0][0].id)
-  // While (processed.length < total number of points)
   while (processed.size < cave.numberOfPoints) {
-    // New group []
     const basin = [];
-    // While (queue is not empty)
     while (queue.length > 0) {
       const currPoint = queue.shift()!;
       toBeProcessed.delete(currPoint.id);
-      // Whenever a point is processed (skipped or fully processed), put it in processed
       if (!processed.has(currPoint.id)) {
         processed.add(currPoint.id);
+        notProcessed.delete(currPoint.id);
       }
-      // If currPoint has a value of 9, skip it
       if (currPoint.height === 9) continue;
-      // Go through each neighbor (top, left, right, bottom) for each point in the queue and put them in the queue 
-      // (if they exist,
-      // , i.e. if they are within the boundaries of the map)
-      // and if they aren't processed yet
       currPoint.getNeighbors(cave.heightMap).forEach((neighbor) => {
         if (!processed.has(neighbor.id) && !toBeProcessed.has(neighbor.id)) {
           queue.push(neighbor);
           toBeProcessed.add(neighbor.id);
         }
       });
-      // Add it to the current basin
       basin.push(currPoint);
     }
-    // Classify this group of points as its own basin
     if (basin.length > 0) {
       cave.basins.push(basin);
     }
-    notProcessed = [...cave.points.filter((point) => !processed.has(point))].sort();
-    if (notProcessed.length > 0) {
-      const row = parseInt(notProcessed[0].split('|')[0]);
-      const col = parseInt(notProcessed[0].split('|')[1]);
+    if (notProcessed.size > 0) {
+      const row = parseInt([...notProcessed.values()][0].split('|')[0]);
+      const col = parseInt([...notProcessed.values()][0].split('|')[1]);
       queue.push(cave.heightMap[row][col]);
       toBeProcessed.add(cave.heightMap[row][col].id);
     }
