@@ -112,10 +112,10 @@ const part2 = (rawInput: string) => {
   // Data structures:
   // Have an empty array to keep track of processed points (processed)
   // Store each point as strings of their coordinates (i.e. '1|5' for row = 1, col 5)
-  const processed: string[] = [];
+  const processed: Set<string> = new Set();
   // Have an array to act as a queue
   const queue: Point[] = [];
-  const queueInId: string[] = [];
+  const toBeProcessed: Set<string> = new Set();
   // Have an array to store basins found (use cave.basins)
 
   // Have an array that's updated every time a basin is formed to record points that are left to be processed
@@ -124,19 +124,18 @@ const part2 = (rawInput: string) => {
   // Steps:
   queue.push(cave.heightMap[0][0]);
   // Start with a queue containing only the first point in points
-  queueInId.push(cave.heightMap[0][0].id)
-  let someBool = 0;
+  toBeProcessed.add(cave.heightMap[0][0].id)
   // While (processed.length < total number of points)
-  while (processed.length < cave.numberOfPoints) {
+  while (processed.size < cave.numberOfPoints) {
     // New group []
     const basin = [];
     // While (queue is not empty)
     while (queue.length > 0) {
       const currPoint = queue.shift()!;
-      queueInId.shift();
+      toBeProcessed.delete(currPoint.id);
       // Whenever a point is processed (skipped or fully processed), put it in processed
-      if (!processed.includes(currPoint.id)) {
-        processed.push(currPoint.id);
+      if (!processed.has(currPoint.id)) {
+        processed.add(currPoint.id);
       }
       // If currPoint has a value of 9, skip it
       if (currPoint.height === 9) continue;
@@ -144,18 +143,10 @@ const part2 = (rawInput: string) => {
       // (if they exist,
       // , i.e. if they are within the boundaries of the map)
       // and if they aren't processed yet
-      // if (currPoint.row === 2 && currPoint.col === 9) {
-        // console.log(`this: ${JSON.stringify(currPoint, null, 4)}`);
-        // someBool++;
-      // }
       currPoint.getNeighbors(cave.heightMap).forEach((neighbor) => {
-        if (!processed.includes(neighbor.id) && !queueInId.includes(neighbor.id)) {
-          // if (currPoint.row === 2 && currPoint.col === 9) {
-            // console.log(`neighbor: ${JSON.stringify(neighbor,null,4)}`);
-            // someBool++;
-          // }
+        if (!processed.has(neighbor.id) && !toBeProcessed.has(neighbor.id)) {
           queue.push(neighbor);
-          queueInId.push(neighbor.id);
+          toBeProcessed.add(neighbor.id);
         }
       });
       // Add it to the current basin
@@ -165,20 +156,17 @@ const part2 = (rawInput: string) => {
     if (basin.length > 0) {
       cave.basins.push(basin);
     }
-    notProcessed = [...cave.points.filter((point) => !processed.includes(point))].sort();
+    notProcessed = [...cave.points.filter((point) => !processed.has(point))].sort();
     if (notProcessed.length > 0) {
       const row = parseInt(notProcessed[0].split('|')[0]);
       const col = parseInt(notProcessed[0].split('|')[1]);
       queue.push(cave.heightMap[row][col]);
-      queueInId.push(cave.heightMap[row][col].id);
+      toBeProcessed.add(cave.heightMap[row][col].id);
     }
   }
 
-  // console.log(cave.basins);
-
   const threeLargestBasins = cave.getLargestBasins(3);
   const basinSizes = threeLargestBasins.map((basin) => basin.length)
-  // console.log(threeLargestBasins);
 
   return basinSizes.reduce((prev, curr) => prev * curr);
 }
