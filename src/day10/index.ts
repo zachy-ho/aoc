@@ -120,7 +120,7 @@ const part1 = (rawInput: string) => {
   return score;
 }
 
-/** Part 2: Description */
+/** Part 2: Finishing incomplete combos */
 const part2 = (rawInput: string) => {
   const lines = parseInput(rawInput);
   const lineStates = lines.map((line) => getLineState(line))
