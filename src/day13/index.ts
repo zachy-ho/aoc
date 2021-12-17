@@ -114,7 +114,7 @@ const part1 = (rawInput: string) => {
   return dots;
 };
 
-/* Part 2: Description */
+/* Part 2: Final 8x Capital Letter Code */
 const part2 = (rawInput: string) => {
   const { maxX, maxY, coordinates, instructions} = parseInput(rawInput);
   paper.grid = Array(maxY + 1).fill([]).map((_i) => Array(maxX + 1).fill('.'));
