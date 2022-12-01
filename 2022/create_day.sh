@@ -13,8 +13,10 @@ touch "${newFile}"
 
 dayCap=${day^}
 cat > "${newFile}" << EOL
+package ${day};
+
 class ${dayCap} {
-    public statc void main(String args[]) {
+    public static void main(String args[]) {
         // make some magic!
     }
 }
