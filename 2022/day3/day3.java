@@ -21,18 +21,18 @@ class Day3 {
         // Part 1
         List<Character> dupes = new ArrayList<Character>();
         Arrays.stream(rucksacks).toList().forEach((rucksack) -> {
-            String comp1 = rucksack.substring(0, rucksack.length() / 2);
-            String comp2 = rucksack.substring(rucksack.length() / 2);
+            String compartment1 = rucksack.substring(0, rucksack.length() / 2);
+            String compartment2 = rucksack.substring(rucksack.length() / 2);
 
-            List<Character> sortedComp1 = new ArrayList<Character>(
-                    comp1.chars().mapToObj((i) -> (char) i).collect(Collectors.toSet())
+            List<Character> items1 = new ArrayList<Character>(
+                    compartment1.chars().mapToObj((i) -> (char) i).collect(Collectors.toSet())
             ).stream().sorted().toList();
-            List<Character> sortedComp2 = new ArrayList<Character>(
-                    comp2.chars().mapToObj((i) -> (char) i).collect(Collectors.toSet())
+            List<Character> items2 = new ArrayList<Character>(
+                    compartment2.chars().mapToObj((i) -> (char) i).collect(Collectors.toSet())
             ).stream().sorted().toList();
 
-            for (Character character : sortedComp1) {
-                if (binarySearch(sortedComp2, character)) {
+            for (Character character : items1) {
+                if (binarySearch(items2, character)) {
                     dupes.add(character);
                     break;
                 }
@@ -49,18 +49,20 @@ class Day3 {
             int elf2 = c + 1;
             int elf3 = c + 2;
 
-            List<Character> sortedElf1 = new ArrayList<Character>(
-                    rucksacks[elf1].chars().mapToObj((i) -> (char) i).collect(Collectors.toSet())
-            ).stream().sorted().toList();
-            List<Character> sortedElf2 = new ArrayList<Character>(
-                    rucksacks[elf2].chars().mapToObj((i) -> (char) i).collect(Collectors.toSet())
-            ).stream().sorted().toList();
-            List<Character> sortedElf3 = new ArrayList<Character>(
-                    rucksacks[elf3].chars().mapToObj((i) -> (char) i).collect(Collectors.toSet())
-            ).stream().sorted().toList();
+            List<List<Character>> elves = new ArrayList<String>(
+                    Arrays.asList(rucksacks[elf1], rucksacks[elf2], rucksacks[elf3])
+            ).stream().map((elf) -> new ArrayList<Character>(elf
+                            .chars()
+                            .mapToObj((item) -> (char) item)
+                            .collect(Collectors.toSet())
+                    )
+                            .stream()
+                            .sorted()
+                            .toList()
+            ).toList();
 
-            for (Character character : sortedElf1) {
-                if (binarySearch(sortedElf2, character) && binarySearch(sortedElf3, character)) {
+            for (Character character : elves.get(0)) {
+                if (binarySearch(elves.get(1), character) && binarySearch(elves.get(2), character)) {
                     badges.add(character);
                     break;
                 }
