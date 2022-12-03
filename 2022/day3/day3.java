@@ -17,19 +17,19 @@ class Day3 {
         input = Files.readString(Path.of("day3", "input.txt"));
 
         String[] rucksacks = input.split("\n");
+        part1(rucksacks);
+        part2(rucksacks);
+    }
 
-        // Part 1
+    private static List<Character> makeSortedUniqueList(String items) {
+        return new ArrayList<Character>(items.chars().mapToObj((item) -> (char) item).collect(Collectors.toSet())).stream().sorted().toList();
+    }
+
+    private static void part1(String[] rucksacks) {
         List<Character> dupes = new ArrayList<Character>();
         Arrays.stream(rucksacks).toList().forEach((rucksack) -> {
-            String compartment1 = rucksack.substring(0, rucksack.length() / 2);
-            String compartment2 = rucksack.substring(rucksack.length() / 2);
-
-            List<Character> items1 = new ArrayList<Character>(
-                    compartment1.chars().mapToObj((i) -> (char) i).collect(Collectors.toSet())
-            ).stream().sorted().toList();
-            List<Character> items2 = new ArrayList<Character>(
-                    compartment2.chars().mapToObj((i) -> (char) i).collect(Collectors.toSet())
-            ).stream().sorted().toList();
+            List<Character> items1 = makeSortedUniqueList(rucksack.substring(0, rucksack.length() / 2));
+            List<Character> items2 = makeSortedUniqueList(rucksack.substring(rucksack.length() / 2));
 
             for (Character character : items1) {
                 if (binarySearch(items2, character)) {
@@ -41,25 +41,14 @@ class Day3 {
 
         System.out.println("Part 1 answer:");
         System.out.println(dupes.stream().map(Day3::getPriority).reduce(0, Integer::sum));
+    }
 
-        // Part 2
+    private static void part2(String[] rucksacks) {
         List<Character> badges = new ArrayList<Character>();
         for (int c = 0; c < rucksacks.length; c += GROUP_SIZE) {
-            int elf1 = c;
-            int elf2 = c + 1;
-            int elf3 = c + 2;
-
             List<List<Character>> elves = new ArrayList<String>(
-                    Arrays.asList(rucksacks[elf1], rucksacks[elf2], rucksacks[elf3])
-            ).stream().map((elf) -> new ArrayList<Character>(elf
-                            .chars()
-                            .mapToObj((item) -> (char) item)
-                            .collect(Collectors.toSet())
-                    )
-                            .stream()
-                            .sorted()
-                            .toList()
-            ).toList();
+                    Arrays.asList(rucksacks[c], rucksacks[c + 1], rucksacks[c + 2])
+            ).stream().map(Day3::makeSortedUniqueList).toList();
 
             for (Character character : elves.get(0)) {
                 if (binarySearch(elves.get(1), character) && binarySearch(elves.get(2), character)) {
