@@ -15,9 +15,14 @@ dayCap=${day^}
 cat > "${newFile}" << EOL
 package ${day};
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 class ${dayCap} {
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException {
         // make some magic!
+        String input = Files.readString(Path.of("${day}", "input.txt"));
     }
 }
 EOL
