@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 class Day2 {
     public enum RoundState {
@@ -33,7 +34,7 @@ class Day2 {
         List<char[]> rounds = Arrays.stream(input.split("\n")).map((round) -> {
             var choices = round.split(" ");
             return new char[]{choices[0].charAt(0), choices[1].charAt(0)};
-        }).toList();
+        }).collect(Collectors.toList());
 
         // --- Part 1 ---
         var totalScore1 = rounds.stream().map((round) -> round1Score(round[0], round[1])).reduce(0, Integer::sum);
@@ -66,7 +67,6 @@ class Day2 {
                 if (opp == OPP_ROCK) {
                     myPick = ME_ROCK;
                 }
-                break;
             }
             case TO_WIN -> {
                 total += 6;
@@ -79,7 +79,6 @@ class Day2 {
                 if (opp == OPP_ROCK) {
                     myPick = ME_PAPER;
                 }
-                break;
             }
             case TO_LOSE -> {
                 total += 0;
@@ -136,15 +135,9 @@ class Day2 {
         }
 
         switch (roundState) {
-            case LOST -> {
-                total += 0;
-            }
-            case DRAW -> {
-                total += 3;
-            }
-            case WON -> {
-                total += 6;
-            }
+            case LOST -> total += 0;
+            case DRAW -> total += 3;
+            case WON -> total += 6;
         }
         return total;
     }
