@@ -8,46 +8,117 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 class Day9 {
     private static final String UP = "U";
     private static final String DOWN = "D";
     private static final String LEFT = "L";
     private static final String RIGHT = "R";
-    private static final Set<String> tailTraversed = new HashSet<String>();
+
     public static void main(String args[]) throws IOException {
         // make some magic!
         String input = Files.readString(Path.of("day9", "sample.txt"));
         List<Instruction> instructions = Arrays.stream(input.split("\n")).map(Instruction::new).toList();
-        System.out.println(instructions);
+        part2(instructions);
+    }
 
-        Node head = new Node();
-        Tail tail = new Tail();
+    private static void part2(List<Instruction> instructions) {
+        List<Node> knots = IntStream.range(0, 10).mapToObj((i) -> new Node()).toList();
+        Set<String> tailTraversed = new HashSet<String>();
 
-        instructions.forEach((instruction) -> {
-            moveHead(instruction, head, tail);
-        });
+        tailTraversed.add(knots.get(knots.size() - 1).toString());
+//        instructions.forEach((instruction) -> {
+//            execute(instruction, knots, tailTraversed);
+//            System.out.println(knots);
+//        });
+        execute(instructions.get(0), knots, tailTraversed);
+        System.out.println("cut");
+        execute(instructions.get(1), knots, tailTraversed);
+        System.out.println("cut");
 
+        System.out.println("Part 2 answer:");
         System.out.println(tailTraversed.size());
     }
 
-    public static void moveHead(Instruction instruction, Node head, Tail tail) {
+    private static void part1(List<Instruction> instructions) {
+        Node head = new Node();
+        Node tail = new Node();
+        Set<String> tailTraversed = new HashSet<String>();
+
+        tailTraversed.add(tail.toString());
+        instructions.forEach((instruction) -> {
+            execute(instruction, head, tail, tailTraversed);
+        });
+
+        System.out.println("Part 1 answer:");
+        System.out.println(tailTraversed.size());
+    }
+
+    // Part 2 execute function
+    // TODO: fix how each following node moves
+    private static void execute(Instruction instruction, List<Node> knots, Set<String> tailTraversed) {
+        Node head = knots.get(0);
         for (int i = 0; i < instruction.steps(); i++) {
+            int prevHeadRow = head.row;
+            int prevHeadCol = head.col;
             switch (instruction.direction()) {
                 case UP -> head.row++;
                 case DOWN -> head.row--;
                 case LEFT -> head.col--;
                 case RIGHT -> head.col++;
             }
-            tail.maybeCloseGap(head);
-            tailTraversed.add(tail.toString());
+            if (knots.get(1).shouldMove(knots.get(0))) {
+                int rowShift = prevHeadRow - knots.get(1).row;
+                int colShift = prevHeadCol - knots.get(1).col;
+                for (int j = 1; j < knots.size(); j++) {
+                    Node currKnot = knots.get(j);
+                    Node prevKnot = knots.get(j - 1);
+                    if (!currKnot.shouldMove(prevKnot)) {
+                        break;
+                    }
+                    if (currKnot.row == 1 && currKnot.col == 3) {
+                        System.out.println(rowShift);
+                        System.out.println(colShift);
+                    }
+                    currKnot.row += rowShift;
+                    currKnot.col += colShift;
+
+                    // Last knot
+                    if (j == knots.size() - 1) {
+                        tailTraversed.add(currKnot.toString());
+                    }
+                }
+            }
+            System.out.println(knots);
         }
     }
+
+    // Part 1 execute function
+    private static void execute(Instruction instruction, Node head, Node tail, Set<String> tailTraversed) {
+        for (int i = 0; i < instruction.steps(); i++) {
+            int prevHeadRow = head.row;
+            int prevHeadCol = head.col;
+            switch (instruction.direction()) {
+                case UP -> head.row++;
+                case DOWN -> head.row--;
+                case LEFT -> head.col--;
+                case RIGHT -> head.col++;
+            }
+            if (tail.shouldMove(head)) {
+                tail.row = prevHeadRow;
+                tail.col = prevHeadCol;
+                tailTraversed.add(tail.toString());
+            }
+        }
+    }
+
 }
 
 class Node {
     public int row;
     public int col;
+
     public Node() {
         this.row = 0;
         this.col = 0;
@@ -61,44 +132,6 @@ class Node {
                 '}';
     }
 
-    public boolean isLeftOf(Node other) {
-        return this.row == other.row && this.col < other.col;
-    }
-
-    public boolean isRightOf(Node other) {
-        return this.row == other.row && this.col > other.col;
-    }
-
-    public boolean isTopOf(Node other) {
-        return this.row > other.row && this.col == other.col;
-    }
-
-    public boolean isBottomOf(Node other) {
-        return this.row < other.row && this.col == other.col;
-    }
-
-    public boolean isTopLeftOf(Node other) {
-        return this.row < other.row && this.col == other.col;
-    }
-
-    public boolean isTopRightOf(Node other) {
-        return this.row > other.row && this.col > other.col;
-    }
-
-    public boolean isBottomLeftOf(Node other) {
-        return this.row < other.row && this.col < other.col;
-    }
-
-    public boolean isBottomRightOf(Node other) {
-        return this.row < other.row && this.col > other.col;
-    }
-}
-
-class Tail extends Node {
-    public Tail() {
-        super();
-    }
-
     public boolean shouldMove(Node head) {
         if (head.row == this.row) {
             return Math.abs(head.col - this.col) > 1;
@@ -109,37 +142,12 @@ class Tail extends Node {
         // diagonal
         return Math.abs(head.row - this.row) + Math.abs(head.col - this.col) > 2;
     }
-
-    public void maybeCloseGap(Node head) {
-        if (!shouldMove(head)) {
-            return;
-        }
-        if (head.isLeftOf(this) || head.isRightOf(this)) {
-            this.col = this.col + ((head.col - this.col)/2);
-        } else if (head.isTopLeftOf(this) || head.isBottomOf(this)) {
-            this.row = this.row + ((head.row - this.row)/2);
-        } else {
-            if (head.isTopLeftOf(this)) {
-                this.row = this.row + 1;
-                this.col = this.col - 1;
-            } else if (head.isTopRightOf(this)) {
-                this.row = this.row + 1;
-                this.col = this.col + 1;
-            } else if (head.isBottomLeftOf(this)) {
-                this.row = this.row - 1;
-                this.col = this.col - 1;
-            } else if (head.isBottomRightOf(this)) {
-                this.row = this.row - 1;
-                this.col = this.col + 1;
-            }
-        }
-        return;
-    }
 }
 
 class Instruction {
     private final String direction;
     private final int steps;
+
     public Instruction(String instruction) {
         List<String> parts = List.of(instruction.split(" "));
         this.direction = parts.get(0);
