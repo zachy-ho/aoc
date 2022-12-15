@@ -18,9 +18,9 @@ class Day9 {
 
     public static void main(String args[]) throws IOException {
         // make some magic!
-        String input = Files.readString(Path.of("day9", "sample.txt"));
+        String input = Files.readString(Path.of("day9", "jridey.txt"));
         List<Instruction> instructions = Arrays.stream(input.split("\n")).map(Instruction::new).toList();
-        part2(instructions);
+        part1(instructions);
     }
 
     private static void part2(List<Instruction> instructions) {
@@ -106,8 +106,8 @@ class Day9 {
                 case RIGHT -> head.col++;
             }
             if (tail.shouldMove(head)) {
-                tail.row = prevHeadRow;
-                tail.col = prevHeadCol;
+                tail.row += Math.max(Math.min(1, prevHeadRow - tail.row), -1);
+                tail.col += Math.max(Math.min(1, prevHeadCol - tail.col), -1);
                 tailTraversed.add(tail.toString());
             }
         }
