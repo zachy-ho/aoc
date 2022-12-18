@@ -18,9 +18,9 @@ class Day9 {
 
     public static void main(String args[]) throws IOException {
         // make some magic!
-        String input = Files.readString(Path.of("day9", "jridey.txt"));
+        String input = Files.readString(Path.of("day9", "input.txt"));
         List<Instruction> instructions = Arrays.stream(input.split("\n")).map(Instruction::new).toList();
-        part1(instructions);
+        part2(instructions);
     }
 
     private static void part2(List<Instruction> instructions) {
@@ -28,17 +28,13 @@ class Day9 {
         Set<String> tailTraversed = new HashSet<String>();
 
         tailTraversed.add(knots.get(knots.size() - 1).toString());
-//        instructions.forEach((instruction) -> {
-//            execute(instruction, knots, tailTraversed);
-//            System.out.println(knots);
-//        });
-        execute(instructions.get(0), knots, tailTraversed);
-        System.out.println("cut");
-        execute(instructions.get(1), knots, tailTraversed);
-        System.out.println("cut");
-
+        instructions.forEach((instruction) -> {
+            execute(instruction, knots, tailTraversed);
+            System.out.println(knots);
+        });
         System.out.println("Part 2 answer:");
         System.out.println(tailTraversed.size());
+        System.out.println(tailTraversed);
     }
 
     private static void part1(List<Instruction> instructions) {
@@ -56,7 +52,6 @@ class Day9 {
     }
 
     // Part 2 execute function
-    // TODO: fix how each following node moves
     private static void execute(Instruction instruction, List<Node> knots, Set<String> tailTraversed) {
         Node head = knots.get(0);
         for (int i = 0; i < instruction.steps(); i++) {
@@ -68,51 +63,38 @@ class Day9 {
                 case LEFT -> head.col--;
                 case RIGHT -> head.col++;
             }
-            if (knots.get(1).shouldMove(knots.get(0))) {
-                int rowShift = prevHeadRow - knots.get(1).row;
-                int colShift = prevHeadCol - knots.get(1).col;
-                for (int j = 1; j < knots.size(); j++) {
-                    Node currKnot = knots.get(j);
-                    Node prevKnot = knots.get(j - 1);
-                    if (!currKnot.shouldMove(prevKnot)) {
-                        break;
-                    }
-                    if (currKnot.row == 1 && currKnot.col == 3) {
-                        System.out.println(rowShift);
-                        System.out.println(colShift);
-                    }
-                    currKnot.row += rowShift;
-                    currKnot.col += colShift;
-
-                    // Last knot
+            for (int j = 1; j < knots.size(); j++) {
+                Node follow = knots.get(j);
+                Node lead = knots.get(j - 1);
+                if (follow.shouldMove(lead)) {
+                    follow.row += Math.max(Math.min(1, lead.row - follow.row), -1);
+                    follow.col += Math.max(Math.min(1, lead.col - follow.col), -1);
                     if (j == knots.size() - 1) {
-                        tailTraversed.add(currKnot.toString());
+                        tailTraversed.add(follow.toString());
                     }
                 }
             }
-            System.out.println(knots);
         }
     }
 
     // Part 1 execute function
-    private static void execute(Instruction instruction, Node head, Node tail, Set<String> tailTraversed) {
+    private static void execute(Instruction instruction, Node lead, Node follow, Set<String> tailTraversed) {
         for (int i = 0; i < instruction.steps(); i++) {
-            int prevHeadRow = head.row;
-            int prevHeadCol = head.col;
+            int prevHeadRow = lead.row;
+            int prevHeadCol = lead.col;
             switch (instruction.direction()) {
-                case UP -> head.row++;
-                case DOWN -> head.row--;
-                case LEFT -> head.col--;
-                case RIGHT -> head.col++;
+                case UP -> lead.row++;
+                case DOWN -> lead.row--;
+                case LEFT -> lead.col--;
+                case RIGHT -> lead.col++;
             }
-            if (tail.shouldMove(head)) {
-                tail.row += Math.max(Math.min(1, prevHeadRow - tail.row), -1);
-                tail.col += Math.max(Math.min(1, prevHeadCol - tail.col), -1);
-                tailTraversed.add(tail.toString());
+            if (follow.shouldMove(lead)) {
+                follow.row += Math.max(Math.min(1, lead.row - follow.row), -1);
+                follow.col += Math.max(Math.min(1, lead.col - follow.col), -1);
+                tailTraversed.add(follow.toString());
             }
         }
     }
-
 }
 
 class Node {
