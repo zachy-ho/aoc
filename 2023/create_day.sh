@@ -13,20 +13,22 @@ touch "${newFolder}/input.txt"
 touch "${newFile}"
 
 cat > "${newFile}" << EOL
-local script_path = debug.getinfo(1, "S").source:sub(2)
-local script_directory = script_path:match("(.*/)")
-local file = assert(io.open(script_directory .. "input.txt", "r"))
-local input = {}
-for l in file:lines() do
-	table.insert(input, l)
+local parse = function()
+	local script_path = debug.getinfo(1, "S").source:sub(2)
+	local script_directory = script_path:match("(.*/)")
+	local file = assert(io.open(script_directory .. "input.txt", "r"))
+	local input = {}
+	for l in file:lines() do
+		table.insert(input, l)
+	end
+	file:close()
+	return input
 end
-file:close()
+local input = parse()
 
-local part_1 = function()
-end
+local part_1 = function() end
 
-local part_2 = function()
-end
+local part_2 = function() end
 
 print(part_1())
 print(part_2())
