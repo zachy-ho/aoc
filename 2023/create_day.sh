@@ -6,6 +6,11 @@ fi
 
 day=$1
 newFolder="./${day}"
+if [ -d "$day" ]; then
+    echo "$day already exists."
+    exit 1
+fi
+
 newFile="${newFolder}/${day}.lua"
 
 mkdir -p "${newFolder}"
