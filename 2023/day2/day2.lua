@@ -1,5 +1,5 @@
 local utils = require("utils")
-local split = utils.split
+local split = utils.split_exact
 
 local parse = function()
 	local script_path = debug.getinfo(1, "S").source:sub(2)
