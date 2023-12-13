@@ -15,6 +15,7 @@ newFile="${newFolder}/${day}.lua"
 
 mkdir -p "${newFolder}"
 touch "${newFolder}/input.txt"
+touch "${newFolder}/test.txt"
 touch "${newFile}"
 
 cat > "${newFile}" << EOL
