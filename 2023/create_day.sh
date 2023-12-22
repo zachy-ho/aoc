@@ -32,14 +32,14 @@ local parse = function()
 	local script_path = debug.getinfo(1, "S").source:sub(2)
 	local script_directory = script_path:match("(.*/)")
 	local file = assert(io.open(script_directory .. "input.txt", "r"))
-	local input = {}
+	local lines = {}
 	for l in file:lines() do
 		table.insert(input, l)
 	end
 	file:close()
-	return input
+	return lines
 end
-local input = parse()
+local lines = parse()
 
 local part_1 = function() end
 
