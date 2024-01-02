@@ -34,7 +34,7 @@ local parse = function()
 	local file = assert(io.open(script_directory .. "input.txt", "r"))
 	local lines = {}
 	for l in file:lines() do
-		table.insert(input, l)
+		table.insert(lines, l)
 	end
 	file:close()
 	return lines
