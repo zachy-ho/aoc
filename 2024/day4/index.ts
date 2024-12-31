@@ -95,8 +95,8 @@ const part1 = () => {
 };
 
 const opposites: Record<string, string> = {
-  'M': 'S',
-  'S': 'M'
+  M: 'S',
+  S: 'M',
 };
 
 function isXmas2(rows: string[], center: [number, number]) {
@@ -104,15 +104,15 @@ function isXmas2(rows: string[], center: [number, number]) {
     return false;
   }
   const diags = getDiagCoords(center);
-  const safe = diags.every(diag => {
-    return diag.every(point => {
+  const safe = diags.every((diag) => {
+    return diag.every((point) => {
       return inBounds(point, rows);
-    })
-  })
+    });
+  });
   if (!safe) {
     return false;
   }
-  return diags.every(diag => isMasOrSam(rows, diag));
+  return diags.every((diag) => isMasOrSam(rows, diag));
 }
 
 function isMasOrSam(rows: string[], diag: [number, number][]) {
@@ -120,15 +120,28 @@ function isMasOrSam(rows: string[], diag: [number, number][]) {
   const c2 = diag[1];
   const first = rows[c1[1]][c1[0]];
   const second = rows[c2[1]][c2[0]];
-  if (!Object.keys(opposites).includes(first) || !Object.keys(opposites).includes(second)) {
+  if (
+    !Object.keys(opposites).includes(first) ||
+    !Object.keys(opposites).includes(second)
+  ) {
     return false;
   }
   return second === opposites[first];
 }
 
 function getDiagCoords(center: [number, number]): [number, number][][] {
-  const x = center[0], y = center[1];
-  return [[[x - 1, y - 1], [x + 1, y + 1]], [[x + 1, y - 1], [x - 1, y + 1]]];
+  const x = center[0],
+    y = center[1];
+  return [
+    [
+      [x - 1, y - 1],
+      [x + 1, y + 1],
+    ],
+    [
+      [x + 1, y - 1],
+      [x - 1, y + 1],
+    ],
+  ];
 }
 
 /* Part 2 */
@@ -153,4 +166,4 @@ const part2 = () => {
   return count;
 };
 
- console.log(part2());
+console.log(part2());
